@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Meu App</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+	<div id="app">
+		<!-- LISTA CONTATO -->
+		 <div class="row">
+		    <div class="col-sm-12">
+		        <table class="table table-bordered">
+		            <thead>
+		                <th>
+		                    <tr>
+		                        <td colspan="5" style="text-align: center; font-weight: bold;">Lista de Contatos</td>
+		                    </tr>
+		                    <tr>
+		                        <td>Id</td>
+		                        <td>Nome</td>
+		                        <td>Fone</td>
+		                        <td>Email</td>
+		                        <td>Ações</td>
+		                    </tr>
+		                </th>
+		            </thead>
+		            <tbody>
+		                <tr v-for="item in lista">
+		                    <td>{{ item.id }}</td>
+		                    <td>{{ item.nome }}</td>
+		                    <td>{{ item.fone }}</td>
+		                    <td>{{ item.email }}</td>
+		                    <td>
+		                        <button @click="edit(item)" class="btn btn-primary">
+		                            Editar
+		                        </button>
+		                        <button @click="remove(item)" class="btn btn-danger">
+		                            Excluir
+		                        </button>
+		                    </td>
+		                </tr>
+		            </tbody>
+		        </table>
+		    </div>
+		</div>
+		<br>
+
+		<!-- FORM CONTATO -->
+		<div class="row">
+		    <div class="col-sm-12">
+		        <form class="form" action="">
+		            <label for="">Nome:</label>
+		            <input class="form-control" type="text" v-model="contact.nome">
+		            <label for="">Fone:</label>
+		            <input class="form-control" type="text" v-model="contact.fone">
+		            <label for="">Email:</label>
+		            <input class="form-control" type="text" v-model="contact.email">
+		            <br>
+		            <button @click="add" class="btn btn-success">Add Contato</button>
+		        </form>
+		    </div>
+		</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+	<script>
+		let app = new Vue ({
+	    el: '#app',
+	    data: {
+	        contact: {
+	            id:0,
+	            nome:'',
+	            fone:'',
+	            email:''
+	        },
+	        index: null,
+	        lista:[]
+	    },
+	    mounted() {
+	        const contacts = JSON.parse(localStorage.getItem('contacts'))
+	        this.lista = contacts ? contacts : []
+	    },
+	    methods:{
+	        add:function(){
+	            if(this.contact.id === 0) {
+	                this.contact.id = this.lista.length + 1
+	                this.lista.push(this.contact)
+	            } else {
+	                this.lista[this.index] = this.contact
+	            }
+	            localStorage.setItem('contacts', JSON.stringify(this.lista))
+	            this.contact = {id:0,nome:null,fone:null,email:null}
+	        },
+	        edit:function(item){
+	            this.index = this.lista.indexOf(item);
+	            console.log(this.index);
+	            this.contact = Object.assign({}, item);
+	            localStorage.setItem('contacts', JSON.stringify(this.lista));
+	            
+	        },
+	        remove:function(item){
+	            const idx = this.lista.indexOf(item);
+	            this.lista.splice(idx,1);
+	            localStorage.setItem('contacts', JSON.stringify(this.lista));
+	        }
+	    }
+	})
+	</script>
+</body>
+</html>
